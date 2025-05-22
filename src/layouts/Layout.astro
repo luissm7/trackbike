@@ -1,0 +1,88 @@
+---
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+import "@/styles/global.css";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Bike Fitting Logroño",
+  "description": "Mejoramos tu rendimiento y comodidad en bicicleta con estudios de biomecánica personalizados.",
+  "image": "https://tudominio.com/imagen-seo.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Calle Mayor, 12",
+    "addressLocality": "Logroño",
+    "addressRegion": "La Rioja",
+    "postalCode": "26001",
+    "addressCountry": "ES"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "42.4668",
+    "longitude": "-2.4445"
+  },
+  "telephone": "+34 941 23 45 67",
+  "email": "info@bikefittinglogrono.com",
+  "url": "https://tudominio.com",
+  "openingHours": "Mo-Fr 09:00-19:00",
+  "sameAs": [
+    "https://www.facebook.com/bikefittinglogrono",
+    "https://www.instagram.com/bikefittinglogrono"
+  ]
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>Bike Fitting en Logroño | Optimiza tu postura en bicicleta</title>
+    <meta name="description" content="Mejora tu rendimiento y comodidad en la bicicleta con nuestro estudio de biomecánica en Logroño. Bike Fitting profesional para ciclistas." />
+    <meta name="keywords" content="bike fitting, biomecánica, ciclismo, rendimiento, postura, Logroño" />
+    <meta name="author" content="Tu Nombre o Marca" />
+
+    <meta property="og:title" content="Bike Fitting en Logroño | Optimiza tu postura en bicicleta" />
+    <meta property="og:description" content="Estudio de biomecánica para ciclistas. Mejora tu posición y rendimiento con nuestro Bike Fitting en Logroño." />
+    <meta property="og:image" content="/imagen-seo.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tudominio.com" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bike Fitting en Logroño | Optimiza tu postura en bicicleta" />
+    <meta name="twitter:description" content="Mejora tu postura y evita lesiones con nuestro estudio de biomecánica en Logroño." />
+    <meta name="twitter:image" content="/imagen-seo.jpg" />
+
+    <link rel="canonical" href="https://tudominio.com" />
+
+    <script type="application/ld+json">
+      {JSON.stringify(schema)}
+    </script>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  :root {
+    --astro-font: 'Inter', sans-serif;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
