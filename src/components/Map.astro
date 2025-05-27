@@ -1,33 +1,40 @@
 ---
 const { slug } = Astro.props;
-import "leaflet/dist/leaflet.css";
 ---
 
-<div id="map" class="h-full w-full">
-  <script type="module">
-    import L from 'leaflet';
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    const map = L.map('map').setView([51.505, -0.09], 13);
+<div
+  id="map"
+  data-slug={slug}
+  style="height: 400px; width: 100%; margin-top: 1rem; border-radius: 8px;"
+></div>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" is:inline></script>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    const mapDiv = document.getElementById('map');
+    if (!mapDiv) return;
+
+    const slug = mapDiv.dataset.slug;
+    if (!slug) return;
+
+    const map = L.map("map").setView([42.4668, -2.4445], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
     fetch(`/geojson/${slug}.geojson`)
-      .then(response => response.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const route = L.geoJSON(data, {
-            style: {
-                color: 'blue',
-                weight: 5,
-                opacity: 0.7
-            }
+          style: { color: "#d21e26", weight: 4 }
         }).addTo(map);
+        map.fitBounds(route.getBounds(), { padding: [10, 10] });
       })
-      .catch(error => console.error('Error loading GeoJSON:', error));
-
-      map.fitBounds(route.getBounds(), {
-        padding: [10, 10]
-      });
-
-  </script>
+      .catch(err => console.error("Error cargando GeoJSON:", err));
+  });
+</script>
