@@ -1,0 +1,33 @@
+---
+const { slug } = Astro.props;
+import "leaflet/dist/leaflet.css";
+---
+
+<div id="map" class="h-full w-full">
+  <script type="module">
+    import L from 'leaflet';
+
+    const map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    fetch(`/geojson/${slug}.geojson`)
+      .then(response => response.json())
+      .then(data => {
+        const route = L.geoJSON(data, {
+            style: {
+                color: 'blue',
+                weight: 5,
+                opacity: 0.7
+            }
+        }).addTo(map);
+      })
+      .catch(error => console.error('Error loading GeoJSON:', error));
+
+      map.fitBounds(route.getBounds(), {
+        padding: [10, 10]
+      });
+
+  </script>
