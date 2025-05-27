@@ -1,0 +1,75 @@
+import os
+import json
+import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
+
+INPUT_JSON = "temp/data_tracks.json"
+OUTPUT_DIR = "public/profile_beautiful"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+plt.rcParams.update({
+    "font.family": "DejaVu Sans",
+    "font.size": 11,
+    "axes.edgecolor": "white",
+    "axes.labelcolor": "white",
+    "xtick.color": "white",
+    "ytick.color": "white",
+    "text.color": "white",
+})
+
+def dibujar_perfil(slug, data):
+    points = data["points"]
+    if not points:
+        print(f"⚠️  No hay points para {slug}, se omite el perfil.")
+        return
+
+    distancias = np.linspace(0, data["km"], num=len(points))
+
+    fig, ax = plt.subplots(figsize=(12, 5), dpi=100)
+    fig.patch.set_facecolor("black")
+    ax.set_facecolor("black")
+
+    gradient = np.linspace(0, 1, 256)
+    gradient = np.vstack((gradient, gradient))
+    cmap = LinearSegmentedColormap.from_list("altitude", ["#1a1a1a", "#2d2d2d", "#444"])
+
+    ax.imshow(gradient, aspect='auto', extent=[distancias[0], distancias[-1], min(points), max(points)],
+              origin='lower', cmap=cmap, alpha=0.4, zorder=0)
+
+    ax.plot(distancias, points, color="#00FFD1", linewidth=2.5, zorder=2,
+            path_effects=[pe.withStroke(linewidth=4, foreground='black')])
+    ax.fill_between(distancias, points, min(points), color="#00FFD1", alpha=0.1)
+
+    ax.set_xlabel("Distancia (km)")
+    ax.set_ylabel("Altitud (m)")
+    ax.set_title(f"{data['name']}", fontsize=14, weight="bold", loc="left")
+
+    resumen = (
+        f"{data['km']} km | Alt. máx: {data['alt_max']} m | "
+        f"Alt. mín: {data['alt_min']} m | +{data['elevation']} m / -{data['elevation']} m"
+    )
+    ax.text(0.99, 0.02, resumen, transform=ax.transAxes, ha="right", va="bottom",
+            fontsize=11, color="#CCCCCC", alpha=0.9,
+            path_effects=[pe.withStroke(linewidth=2, foreground='black')])
+
+    plt.tight_layout()
+    output_path = os.path.join(OUTPUT_DIR, f"{slug}_estilizado.png")
+    plt.savefig(output_path, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.close()
+    print(f"✅ Imagen generada: {output_path}")
+
+def main():
+    if not os.path.exists(INPUT_JSON):
+        print(f"❌ No se encontró el archivo: {INPUT_JSON}")
+        return
+
+    with open(INPUT_JSON, "r", encoding="utf-8") as f:
+        rutas = json.load(f)
+
+    for slug, data in rutas.items():
+        dibujar_perfil(slug, data)
+
+if __name__ == "__main__":
+    main()
